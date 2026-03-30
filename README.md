@@ -37,7 +37,7 @@ Pull the pre-built image:
 
 ```bash
 docker pull <your-dockerhub-user>/kafka-message-producer
-docker run -p 3000:3000 <your-dockerhub-user>/kafka-message-producer
+docker run -p 8990:8990 <your-dockerhub-user>/kafka-message-producer
 ```
 
 Build and push:
