@@ -1,4 +1,5 @@
 const { Kafka, logLevel } = require("kafkajs");
+const { resolveValue } = require("./templateEngine");
 
 class KafkaProducerService {
   constructor() {
@@ -36,18 +37,26 @@ class KafkaProducerService {
     }
   }
 
-  _buildMessages(key, value, headers) {
+  _buildMessages(key, value, headers, context = {}) {
+    const resolvedValue = resolveValue(value, context);
     const message = {
-      value: typeof value === "string" ? value : JSON.stringify(value),
+      value:
+        typeof resolvedValue === "string"
+          ? resolvedValue
+          : JSON.stringify(resolvedValue),
     };
-    if (key) message.key = key;
-    if (headers && Object.keys(headers).length > 0) message.headers = headers;
+    if (key) {
+      message.key = typeof key === "string" ? resolveValue(key, context) : key;
+    }
+    if (headers && Object.keys(headers).length > 0) {
+      message.headers = resolveValue(headers, context);
+    }
     return message;
   }
 
   async sendSingle(topic, key, value, headers) {
     if (!this.connected) throw new Error("Producer not connected");
-    const message = this._buildMessages(key, value, headers);
+    const message = this._buildMessages(key, value, headers, { index: 0 });
     const result = await this.producer.send({ topic, messages: [message] });
     return { sent: 1, result };
   }
@@ -56,7 +65,7 @@ class KafkaProducerService {
     if (!this.connected) throw new Error("Producer not connected");
     const messages = [];
     for (let i = 0; i < count; i++) {
-      messages.push(this._buildMessages(key, value, headers));
+      messages.push(this._buildMessages(key, value, headers, { index: i }));
     }
     const result = await this.producer.send({ topic, messages });
     return { sent: count, result };
@@ -70,7 +79,9 @@ class KafkaProducerService {
 
     const timer = setInterval(async () => {
       try {
-        const message = this._buildMessages(key, value, headers);
+        const message = this._buildMessages(key, value, headers, {
+          index: sentCount,
+        });
         await this.producer.send({ topic, messages: [message] });
         sentCount++;
         if (onSend) onSend(id, sentCount);

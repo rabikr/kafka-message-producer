@@ -37,15 +37,29 @@
         </div>
         <div class="form-row">
           <label for="msgKey">Key</label>
-          <input type="text" id="msgKey" placeholder="(optional)" />
+          <input type="text" id="msgKey" placeholder="{{loanId}}" />
         </div>
         <div class="form-row">
           <label for="msgValue">Value <span class="required">*</span></label>
-          <textarea id="msgValue" rows="6" placeholder='{"event":"test","timestamp":"{{timestamp}}"}'></textarea>
+          <textarea id="msgValue" rows="8" placeholder='{"loanId":"{{loanId}}","firstName":"{{firstName}}"}'></textarea>
+          <button id="btnInsertTemplate" class="btn btn-small" style="margin-top:0.5rem; float:none;">Insert Loan
+            Template</button>
         </div>
         <div class="form-row">
           <label for="msgHeaders">Headers (JSON)</label>
           <textarea id="msgHeaders" rows="2" placeholder='{"source":"kafka-producer-ui"}'></textarea>
+        </div>
+      </section>
+
+      <!-- Template Variables Reference -->
+      <section class="panel collapsible" id="variablesPanel">
+        <h2 class="collapsible-header">
+          Template Variables <span class="collapse-icon">&#9660;</span>
+        </h2>
+        <div class="collapsible-body">
+          <p class="hint">Use <code>{{variableName}}</code> in Key, Value, or Headers. Each message gets unique random
+            values.</p>
+          <div id="variablesList" class="variables-grid"></div>
         </div>
       </section>
 

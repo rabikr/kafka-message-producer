@@ -1,5 +1,6 @@
 const express = require("express");
 const producer = require("./kafkaProducer");
+const { listVariables } = require("./templateEngine");
 
 const router = express.Router();
 
@@ -104,6 +105,24 @@ router.post("/produce/interval/stop", async (req, res) => {
 
 router.get("/status", (req, res) => {
   res.json(producer.getStatus());
+});
+
+// --- Template variables ---
+
+router.get("/variables", (req, res) => {
+  res.json(listVariables());
+});
+
+// --- Defaults (env-driven) ---
+
+router.get("/defaults", (req, res) => {
+  res.json({
+    brokers: process.env.KAFKA_BROKER_DEFAULT || "",
+    clientId: process.env.KAFKA_CLIENT_ID || "",
+    topic: process.env.KAFKA_TOPIC || "",
+    key: process.env.KAFKA_KEY || "",
+    value: process.env.KAFKA_VALUE || "",
+  });
 });
 
 module.exports = router;

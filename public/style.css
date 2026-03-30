@@ -239,3 +239,81 @@ textarea:focus {
   padding: 0.2rem 0.6rem;
   font-size: 0.75rem;
 }
+
+/* Collapsible panel */
+.collapsible-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapse-icon {
+  font-size: 0.75rem;
+  transition: transform 0.2s;
+}
+
+.collapsible.collapsed .collapse-icon {
+  transform: rotate(-90deg);
+}
+
+.collapsible.collapsed .collapsible-body {
+  display: none;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.hint code {
+  background: var(--bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-family: "Cascadia Code", "Fira Code", monospace;
+  color: var(--primary);
+  font-size: 0.8rem;
+}
+
+/* Variables grid */
+.variables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.35rem;
+}
+
+.var-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-family: "Cascadia Code", "Fira Code", monospace;
+  font-size: 0.75rem;
+  color: var(--primary);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.var-chip:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.var-chip .var-category {
+  display: block;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.var-chip:hover .var-category {
+  color: rgba(255, 255, 255, 0.7);
+}

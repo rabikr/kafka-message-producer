@@ -36,15 +36,22 @@ npm run dev
 Pull the pre-built image:
 
 ```bash
-docker pull <your-dockerhub-user>/kafka-message-producer
-docker run -p 8990:8990 <your-dockerhub-user>/kafka-message-producer
+docker pull rabik/kafka-message-producer
+docker run -p 3000:3000 rabik/kafka-message-producer
 ```
 
-Build and push:
+### Build & Push (multi-architecture)
+
+The image must be built for both `amd64` (Intel/AMD) and `arm64` (Apple Silicon) so it works everywhere:
 
 ```bash
-docker build -t <your-dockerhub-user>/kafka-message-producer .
-docker push <your-dockerhub-user>/kafka-message-producer
+# one-time: create a buildx builder
+docker buildx create --name multiarch --use
+docker buildx inspect --bootstrap
+
+# build and push for both platforms
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t rabik/kafka-message-producer:latest --push .
 ```
 
 ## API Endpoints
