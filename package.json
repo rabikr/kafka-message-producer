@@ -1,0 +1,20 @@
+{
+  "name": "kafka-message-producer",
+  "version": "1.0.0",
+  "description": "A web-based Kafka message producer with UI for sending single, interval, and batch messages",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "kafka",
+    "producer",
+    "messaging"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "kafkajs": "^2.2.4"
+  }
+}

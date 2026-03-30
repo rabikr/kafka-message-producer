@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kafka Message Producer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Kafka Message Producer</h1>
+
+      <!-- Connection Panel -->
+      <section class="panel" id="connectionPanel">
+        <h2>Connection</h2>
+        <div class="form-row">
+          <label for="brokers">Brokers</label>
+          <input type="text" id="brokers" placeholder="localhost:9092" value="localhost:9092" />
+        </div>
+        <div class="form-row">
+          <label for="clientId">Client ID</label>
+          <input type="text" id="clientId" placeholder="kafka-message-producer" value="kafka-message-producer" />
+        </div>
+        <div class="btn-group">
+          <button id="btnConnect" class="btn btn-primary">Connect</button>
+          <button id="btnDisconnect" class="btn btn-danger" disabled>Disconnect</button>
+        </div>
+        <div id="connectionStatus" class="status disconnected">Disconnected</div>
+      </section>
+
+      <!-- Message Definition -->
+      <section class="panel" id="messagePanel">
+        <h2>Message</h2>
+        <div class="form-row">
+          <label for="topic">Topic <span class="required">*</span></label>
+          <input type="text" id="topic" placeholder="my-topic" />
+        </div>
+        <div class="form-row">
+          <label for="msgKey">Key</label>
+          <input type="text" id="msgKey" placeholder="(optional)" />
+        </div>
+        <div class="form-row">
+          <label for="msgValue">Value <span class="required">*</span></label>
+          <textarea id="msgValue" rows="6" placeholder='{"event":"test","timestamp":"{{timestamp}}"}'></textarea>
+        </div>
+        <div class="form-row">
+          <label for="msgHeaders">Headers (JSON)</label>
+          <textarea id="msgHeaders" rows="2" placeholder='{"source":"kafka-producer-ui"}'></textarea>
+        </div>
+      </section>
+
+      <!-- Send Modes -->
+      <section class="panel" id="sendPanel">
+        <h2>Send Mode</h2>
+        <div class="tabs">
+          <button class="tab active" data-tab="single">Single</button>
+          <button class="tab" data-tab="count">Count</button>
+          <button class="tab" data-tab="interval">Interval</button>
+        </div>
+
+        <div class="tab-content active" id="tab-single">
+          <p>Send a single message to the topic.</p>
+          <button id="btnSendSingle" class="btn btn-primary">Send Message</button>
+        </div>
+
+        <div class="tab-content" id="tab-count">
+          <div class="form-row">
+            <label for="msgCount">Message Count</label>
+            <input type="number" id="msgCount" min="1" max="10000" value="10" />
+          </div>
+          <button id="btnSendCount" class="btn btn-primary">Send Batch</button>
+        </div>
+
+        <div class="tab-content" id="tab-interval">
+          <div class="form-row">
+            <label for="intervalMs">Interval (ms)</label>
+            <input type="number" id="intervalMs" min="100" value="1000" />
+          </div>
+          <button id="btnStartInterval" class="btn btn-primary">Start Interval</button>
+          <button id="btnStopAllIntervals" class="btn btn-danger">Stop All</button>
+          <div id="activeIntervals"></div>
+        </div>
+      </section>
+
+      <!-- Log -->
+      <section class="panel">
+        <h2>Log</h2>
+        <button id="btnClearLog" class="btn btn-small">Clear</button>
+        <div id="log" class="log"></div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
