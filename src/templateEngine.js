@@ -216,8 +216,8 @@ function padZero(n, len) {
 const generators = {
   // IDs
   uuid: () => crypto.randomUUID(),
-  loanId: () => `LN-${Date.now()}-${randInt(1000, 9999)}`,
-  applicationId: () => `APP-${padZero(randInt(100000, 999999), 6)}`,
+  loanId: () => `${Date.now()}-${randInt(1000, 9999)}`,
+  applicationId: () => `${padZero(randInt(100000000, 999999999), 9)}`,
 
   // Person
   firstName: () => pick(FIRST_NAMES),
@@ -273,10 +273,19 @@ const generators = {
 function resolveTemplate(template, context = {}) {
   if (typeof template !== "string") return template;
 
+  if (!context._cache) context._cache = {};
+
   return template.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
     if (varName === "index") return context.index ?? 0;
     const gen = generators[varName];
     if (typeof gen === "function") {
+      if (varName === "applicationId") {
+        if (context._cache.applicationId == null) {
+          context._cache.applicationId = gen();
+        }
+        const val = context._cache.applicationId;
+        return typeof val === "string" ? val : JSON.stringify(val);
+      }
       const val = gen();
       return typeof val === "string" ? val : JSON.stringify(val);
     }
