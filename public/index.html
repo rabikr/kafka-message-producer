@@ -58,7 +58,9 @@
         </h2>
         <div class="collapsible-body">
           <p class="hint">Use <code>{{variableName}}</code> in Key, Value, or Headers. Each message gets unique random
-            values.</p>
+            values. <code>{{timestamp}}</code> is cached per message &mdash; use offsets like
+            <code>{{timestamp+1m}}</code>, <code>{{timestamp+36m}}</code>, <code>{{timestamp-7d}}</code>.
+          </p>
           <div id="variablesList" class="variables-grid"></div>
         </div>
       </section>

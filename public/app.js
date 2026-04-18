@@ -11,7 +11,7 @@
       topic: $("#topic").value,
       msgKey: $("#msgKey").value,
       msgValue: $("#msgValue").value,
-      msgHeaders: $("#msgHeaders").value,
+      msgHeaders: $("#msgHeaders")?.value || "",
       msgCount: $("#msgCount").value,
       intervalMs: $("#intervalMs").value,
     };
@@ -28,7 +28,8 @@
       if (state.topic) $("#topic").value = state.topic;
       if (state.msgKey) $("#msgKey").value = state.msgKey;
       if (state.msgValue) $("#msgValue").value = state.msgValue;
-      if (state.msgHeaders) $("#msgHeaders").value = state.msgHeaders;
+      if (state.msgHeaders && $("#msgHeaders"))
+        $("#msgHeaders").value = state.msgHeaders;
       if (state.msgCount) $("#msgCount").value = state.msgCount;
       if (state.intervalMs) $("#intervalMs").value = state.intervalMs;
     } catch {}
@@ -62,7 +63,7 @@
     const topic = $("#topic").value.trim();
     const key = $("#msgKey").value.trim() || undefined;
     let value = $("#msgValue").value.trim();
-    const headersRaw = $("#msgHeaders").value.trim();
+    const headersRaw = ($("#msgHeaders")?.value || "").trim();
 
     if (!topic) throw new Error("Topic is required");
     if (!value) throw new Error("Value is required");
@@ -262,6 +263,9 @@
     ],
     Generic: [
       "timestamp",
+      "timestamp+Nm",
+      "timestamp+Nd",
+      "timestamp+Ny",
       "epochMs",
       "index",
       "randomInt",
@@ -347,7 +351,10 @@
         creditScore: "{{creditScore}}",
         annualIncome: "{{annualIncome}}",
         employer: "{{employer}}",
-        timestamp: "{{timestamp}}",
+        interestAccrualStartDate: "{{timestamp}}",
+        loanContractSignedDate: "{{timestamp}}",
+        paymentSeriesFirstScheduledDate: "{{timestamp+1m}}",
+        maturityDate: "{{timestamp+36m}}",
       },
       null,
       2,

@@ -258,7 +258,7 @@ const generators = {
   employer: () => pick(EMPLOYERS),
 
   // Generic
-  timestamp: () => new Date().toISOString(),
+  timestamp: () => new Date().toISOString().split("T")[0],
   epochMs: () => Date.now(),
   index: null, // handled specially with context
   randomInt: () => randInt(1, 1000000),
@@ -267,30 +267,69 @@ const generators = {
 };
 
 /**
+ * Add an offset to a YYYY-MM-DD date string.
+ * unit: 'd' (days), 'm' (months), 'y' (years)
+ */
+function addDateOffset(baseDateStr, sign, amount, unit) {
+  const d = new Date(baseDateStr + "T00:00:00");
+  const offset = (sign === "-" ? -1 : 1) * amount;
+  switch (unit) {
+    case "d":
+      d.setDate(d.getDate() + offset);
+      break;
+    case "m":
+      d.setMonth(d.getMonth() + offset);
+      break;
+    case "y":
+      d.setFullYear(d.getFullYear() + offset);
+      break;
+  }
+  return d.toISOString().split("T")[0];
+}
+
+/**
  * Resolve all {{varName}} placeholders in a string.
  * `context.index` is passed for {{index}} support.
+ * Supports date offsets: {{timestamp+1m}}, {{timestamp-30d}}, {{timestamp+3y}}
  */
 function resolveTemplate(template, context = {}) {
   if (typeof template !== "string") return template;
 
   if (!context._cache) context._cache = {};
 
-  return template.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
-    if (varName === "index") return context.index ?? 0;
-    const gen = generators[varName];
-    if (typeof gen === "function") {
+  return template.replace(
+    /\{\{(\w+)(?:\s*([+-])\s*(\d+)([dmy]))?\}\}/g,
+    (match, varName, sign, amount, unit) => {
+      if (varName === "index") return context.index ?? 0;
+
+      // Cached variables: timestamp, applicationId
+      if (varName === "timestamp") {
+        if (context._cache.timestamp == null) {
+          context._cache.timestamp = generators.timestamp();
+        }
+        const base = context._cache.timestamp;
+        if (sign && amount && unit) {
+          return addDateOffset(base, sign, parseInt(amount), unit);
+        }
+        return base;
+      }
+
       if (varName === "applicationId") {
         if (context._cache.applicationId == null) {
-          context._cache.applicationId = gen();
+          context._cache.applicationId = generators.applicationId();
         }
         const val = context._cache.applicationId;
         return typeof val === "string" ? val : JSON.stringify(val);
       }
-      const val = gen();
-      return typeof val === "string" ? val : JSON.stringify(val);
-    }
-    return match; // leave unknown placeholders as-is
-  });
+
+      const gen = generators[varName];
+      if (typeof gen === "function") {
+        const val = gen();
+        return typeof val === "string" ? val : JSON.stringify(val);
+      }
+      return match; // leave unknown placeholders as-is
+    },
+  );
 }
 
 /**
